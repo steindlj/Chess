@@ -1,2 +1,1 @@
-# Chess 
-Chess coded in Java which, playable locally.
+# Chess coded in Java, playable locally.
