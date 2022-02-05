@@ -6,14 +6,13 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Button extends JButton implements ActionListener{
-    AbstractPiece piece = null;
+    public AbstractPiece piece = null;
     int[] spot;
     JLabel label;
     
     Button(int[] spot, Color color) {
         this.label = new JLabel("", JLabel.CENTER);
-        this.label.setFont(new Font("Arial Unicode MS", Font.PLAIN, 65));
-        this.label.setPreferredSize(new Dimension(100,100));
+        this.label.setFont(Game.BUTTON_FONT);
         this.add(label);
         this.spot = spot;
         this.setPreferredSize(new Dimension(100, 100));
@@ -23,7 +22,7 @@ public class Button extends JButton implements ActionListener{
 
     Button(AbstractPiece piece, int[] spot, Color color) {
         this.label = new JLabel(piece.getSymbol(), JLabel.CENTER);
-        this.label.setFont(new Font("Arial Unicode MS", Font.PLAIN, 65));
+        this.label.setFont(Game.BUTTON_FONT);
         this.setPreferredSize(new Dimension(100, 100));
         this.setBackground(color);
         this.add(label);
@@ -35,9 +34,11 @@ public class Button extends JButton implements ActionListener{
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == this) {
             if (hasPiece() && Game.from == null && this.piece.getColor().equals(Game.Player)) {
+                showMoves(this.piece, this.spot);
                 Game.from = this.spot;
                 Game.movingPiece = this.piece;
             } else if (Game.from != null) {
+                removeMoves();
                 Game.to = this.spot;
                 if (Game.from[0] == Game.to[0] && Game.from[1] == Game.to[1]) {
                     Game.from = null;
@@ -49,15 +50,15 @@ public class Button extends JButton implements ActionListener{
                         Game.btnsPiece[Game.from[0]][Game.from[1]].removePiece();
                         placePiece(Game.movingPiece);
                         Game.Player = Game.Player.equals("white") ? "black" : "white";
-                        Game.status.setText("Turn: " + Game.Player);
+                        Game.turnLabel.setText("Turn: " + Game.Player);
                     }
                 } else {
-                    if (Game.movingPiece.canMove(Game.from, Game.to) && !Game.movingPiece.getColor().equals(this.piece.getColor())) {
+                    if (Game.movingPiece.canMove(Game.from, Game.to)) {
                         String logMove = "\n" + Game.movingPiece.getAbbreviation() + " takes " + this.piece.getAbbreviation() + "!";
                         if (this.piece.getName().equals("King")) {
                             Game.btnsPiece[Game.from[0]][Game.from[1]].removePiece();
                             placePiece(Game.movingPiece);
-                            Game.status.setText(Game.Player + " won!");
+                            Game.turnLabel.setText(Game.Player + " won!");
                             for (int i = 0; i < 8; i++) {
                                 for (Button btn : Game.btnsPiece[i]) {
                                     btn.setEnabled(false);
@@ -67,7 +68,7 @@ public class Button extends JButton implements ActionListener{
                             Game.btnsPiece[Game.from[0]][Game.from[1]].removePiece();
                             placePiece(Game.movingPiece);
                             Game.Player = Game.Player.equals("white") ? "black" : "white";
-                            Game.status.setText("Turn: " + Game.Player);
+                            Game.turnLabel.setText("Turn: " + Game.Player);
                         }
                         Game.logText.setText(Game.logText.getText() + logMove);
                     }
@@ -101,5 +102,35 @@ public class Button extends JButton implements ActionListener{
         logMove += this.piece.getChessSpot();
         Game.logText.setText(Game.logText.getText() + logMove);
         this.label.setText(piece.getSymbol());
+    }
+
+    private void showMoves(AbstractPiece piece, int[] from) {
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++) {
+                if (piece.canMove(from, Game.btnsPiece[i][j].spot)) {
+                    Game.btnsPiece[i][j].setBackground(Color.GREEN);
+                    Game.frame.validate();
+                    Game.frame.repaint();
+                }
+            }
+        }
+    }
+
+    private void removeMoves() {
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++) {
+                if (Game.btnsPiece[i][j].getBackground() == Color.GREEN) {
+                    if (i % 2 == 1 && j % 2 == 0) {
+                        Game.btnsPiece[i][j].setBackground(Game.DARK_COLOR);
+                    } else if (i % 2 == 0 && j % 2 == 1) {
+                        Game.btnsPiece[i][j].setBackground(Game.DARK_COLOR);
+                    } else {
+                        Game.btnsPiece[i][j].setBackground(Game.LIGHT_COLOR);
+                    }
+                    Game.frame.validate();
+                    Game.frame.repaint();
+                }
+            }
+        }
     }
 }
