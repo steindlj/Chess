@@ -13,6 +13,7 @@ public class Game {
     public static JLabel status = new JLabel();
     public static AbstractPiece[] pieces; 
     public static JFrame frame = new JFrame("Chess");
+    public static JTextArea logText;
     public static void main(String[] args) {
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,6 +29,14 @@ public class Game {
         statusPlayer.setLayout(new BorderLayout());
         statusPlayer.setPreferredSize(new Dimension(800, 30));
         RestartButton restart = new RestartButton();
+        JPanel logPanel = new JPanel();
+        logPanel.setPreferredSize(new Dimension(200, 800));
+        logText = new JTextArea("Logs:");
+        logText.setFont(new Font("Arial", Font.BOLD, 20));
+        JScrollPane logScrollScreen = new JScrollPane(logText);
+        logScrollScreen.setPreferredSize(new Dimension(160, 800));
+        logScrollScreen.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        logPanel.add(logScrollScreen);
         Player = "white";
         btnsPiece = new Button[8][8];
         pieces = new AbstractPiece[32];
@@ -37,6 +46,7 @@ public class Game {
         statusPlayer.add(restart, BorderLayout.EAST);
         frame.add(panel);
         frame.add(statusPlayer, BorderLayout.SOUTH);
+        frame.add(logPanel, BorderLayout.EAST);
         setPieces(pieces);
         setBtns(btnsPiece, pieces, panel);
         frame.pack();

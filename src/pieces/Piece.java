@@ -7,4 +7,6 @@ public interface Piece {
     String getColor();
     boolean canMove(int[] from, int[] to);
     boolean willJump(int[] from, int[] to);
+    String getChessSpot();
+    String getAbbreviation();
 }

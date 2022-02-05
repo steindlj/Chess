@@ -53,6 +53,7 @@ public class Button extends JButton implements ActionListener{
                     }
                 } else {
                     if (Game.movingPiece.canMove(Game.from, Game.to) && !Game.movingPiece.getColor().equals(this.piece.getColor())) {
+                        String logMove = "\n" + Game.movingPiece.getAbbreviation() + " takes " + this.piece.getAbbreviation() + "!";
                         if (this.piece.getName().equals("King")) {
                             Game.btnsPiece[Game.from[0]][Game.from[1]].removePiece();
                             placePiece(Game.movingPiece);
@@ -68,6 +69,7 @@ public class Button extends JButton implements ActionListener{
                             Game.Player = Game.Player.equals("white") ? "black" : "white";
                             Game.status.setText("Turn: " + Game.Player);
                         }
+                        Game.logText.setText(Game.logText.getText() + logMove);
                     }
                 }
                 Game.from = null;
@@ -93,7 +95,11 @@ public class Button extends JButton implements ActionListener{
     }
 
     private void placePiece(AbstractPiece piece) {
+        String logMove = "\n[" + piece.getAbbreviation() + "] " + piece.getChessSpot() + " to ";
         this.piece = piece;
+        this.piece.spot = this.spot;
+        logMove += this.piece.getChessSpot();
+        Game.logText.setText(Game.logText.getText() + logMove);
         this.label.setText(piece.getSymbol());
     }
 }
