@@ -9,7 +9,7 @@ public class RestartButton extends JButton implements ActionListener {
         JLabel label = new JLabel("RESTART");
         label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         label.setFont(Game.TEXT_FONT);
-        this.setPreferredSize(new Dimension(90, 30));
+        this.setPreferredSize(new Dimension(160, 30));
         this.add(label);
         this.addActionListener(this);
     }

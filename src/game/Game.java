@@ -9,6 +9,7 @@ public class Game {
     public static final Font BUTTON_FONT = new Font("Arial Unicode MS", Font.PLAIN, 65);
     public static final Color LIGHT_COLOR = new Color(213, 168, 119);
     public static final Color DARK_COLOR = new Color(147, 73, 25);
+    public static final Color MOVE_COLOR = new Color(173, 251, 133);
 
     public static AbstractPiece movingPiece = null;
     public static int[] from = null;
@@ -20,14 +21,14 @@ public class Game {
     public static JTextArea logText;
     public static JLabel turnLabel;
     public static void main(String[] args) {
-        frame.setLayout(new BorderLayout());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
         createBoardGUI(frame);
     }
 
     static void createBoardGUI(JFrame frame) {
         frame.getContentPane().removeAll();
+        frame.setLayout(new BorderLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
         Player = "white";
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(8, 8)); 
@@ -36,9 +37,11 @@ public class Game {
         RestartButton restart = new RestartButton();
         JPanel Menu = new JPanel(new BorderLayout());
         logText = new JTextArea("Logs:");
+        logText.setEditable(false);
         logText.setFont(TEXT_FONT);
+        logText.setBackground(new Color(193, 193, 193));
         JScrollPane logScrollScreen = new JScrollPane(logText);
-        logScrollScreen.setPreferredSize(new Dimension(160, 697));
+        logScrollScreen.setPreferredSize(new Dimension(160, 700));
         logScrollScreen.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         Menu.add(logScrollScreen, BorderLayout.PAGE_START);
         Menu.add(restart, BorderLayout.PAGE_END);

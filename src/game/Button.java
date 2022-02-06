@@ -108,7 +108,7 @@ public class Button extends JButton implements ActionListener{
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
                 if (piece.canMove(from, Game.btnsPiece[i][j].spot)) {
-                    Game.btnsPiece[i][j].setBackground(Color.GREEN);
+                    Game.btnsPiece[i][j].setBackground(Game.MOVE_COLOR);
                     Game.frame.validate();
                     Game.frame.repaint();
                 }
@@ -119,7 +119,7 @@ public class Button extends JButton implements ActionListener{
     private void removeMoves() {
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
-                if (Game.btnsPiece[i][j].getBackground() == Color.GREEN) {
+                if (Game.btnsPiece[i][j].getBackground() == Game.MOVE_COLOR) {
                     if (i % 2 == 1 && j % 2 == 0) {
                         Game.btnsPiece[i][j].setBackground(Game.DARK_COLOR);
                     } else if (i % 2 == 0 && j % 2 == 1) {
