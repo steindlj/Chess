@@ -1,1 +1,1 @@
-# Chess coded in Java, playable locally.
+# Chess game, playable locally.
