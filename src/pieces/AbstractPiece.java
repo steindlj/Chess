@@ -67,7 +67,7 @@ abstract public class AbstractPiece implements Piece{
         }
         switch (this.spot[1]) {
             case 0:
-                column = '1';
+                column = 'a';
                 break;
             case 1:
                 column = 'b';
