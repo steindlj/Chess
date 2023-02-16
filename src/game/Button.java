@@ -21,14 +21,9 @@ public class Button extends JButton implements ActionListener{
     }
 
     Button(AbstractPiece piece, int[] spot, Color color) {
-        this.label = new JLabel(piece.getSymbol(), JLabel.CENTER);
-        this.label.setFont(Game.BUTTON_FONT);
-        this.setPreferredSize(new Dimension(100, 100));
-        this.setBackground(color);
-        this.add(label);
-        this.spot = spot;
+        this(spot, color);
+        this.label.setText(piece.getSymbol());
         this.piece = piece;
-        this.addActionListener(this);
     }
 
     public void actionPerformed(ActionEvent ae) {

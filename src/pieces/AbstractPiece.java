@@ -37,60 +37,8 @@ abstract public class AbstractPiece implements Piece{
 
     @Override
     public String getChessSpot() {
-        char row = ' ';
-        char column = ' ';
-        switch (this.spot[0]) {
-            case 0:
-                row = '8';
-                break;
-            case 1:
-                row = '7';
-                break;
-            case 2:
-                row = '6';
-                break;
-            case 3:
-                row = '5';
-                break;
-            case 4:
-                row = '4';
-                break;
-            case 5:
-                row = '3';
-                break;
-            case 6:
-                row = '2';
-                break;
-            case 7:
-                row = '1';
-                break;
-        }
-        switch (this.spot[1]) {
-            case 0:
-                column = '1';
-                break;
-            case 1:
-                column = 'b';
-                break;
-            case 2:
-                column = 'c';
-                break;
-            case 3:
-                column = 'd';
-                break;
-            case 4:
-                column = 'e';
-                break;
-            case 5:
-                column = 'f';
-                break;
-            case 6:
-                column = 'g';
-                break;
-            case 7:
-                column = 'h';
-                break;
-        }
+        int row = 8-this.spot[0];
+        char column = (char) (this.spot[1]+97);
         return String.valueOf(column) + String.valueOf(row);
     }
 
