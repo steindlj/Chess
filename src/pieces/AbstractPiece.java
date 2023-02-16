@@ -138,4 +138,8 @@ abstract public class AbstractPiece implements Piece{
         }
         return false;
     }
+
+    public boolean isMovePossible(int[] from, int[] to) {
+        return willJump(from, to) || (Game.btnsPiece[to[0]][to[1]].hasPiece() && getColor().equals(Game.btnsPiece[to[0]][to[1]].piece.getColor()));
+    }
 }

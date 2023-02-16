@@ -9,4 +9,5 @@ public interface Piece {
     boolean willJump(int[] from, int[] to);
     String getChessSpot();
     String getAbbreviation();
+    boolean isMovePossible(int[] from, int[] to);
 }

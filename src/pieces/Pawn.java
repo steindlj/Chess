@@ -9,7 +9,7 @@ public class Pawn extends AbstractPiece{
 
     @Override
     public boolean canMove(int[] from, int[] to) {
-        if (super.willJump(from, to) || (Game.btnsPiece[to[0]][to[1]].hasPiece() && super.getColor().equals(Game.btnsPiece[to[0]][to[1]].piece.getColor()))) return false;
+        if (super.isMovePossible(from, to)) return false;
         if (from[1] == to[1]) {
             if (super.getColor().equals("white") && to[0]-from[0] > -3 && to[0]-from[0] < 0) {
                 if(to[0]-from[0] == -2 && from[0] == 6) {
