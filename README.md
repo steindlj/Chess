@@ -1,5 +1,5 @@
 # Chess
-Local chess game.
+Local chess game. TODO: use MVC pattern
 ## License
 Chess – Local chess game. <br />
 Copyright © 2022 steindlj
