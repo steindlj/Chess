@@ -78,11 +78,7 @@ public class Button extends JButton implements ActionListener{
     }
     
     public boolean hasPiece() {
-        if (this.piece == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return this.piece != null;
     }
 
     private void removePiece() {
