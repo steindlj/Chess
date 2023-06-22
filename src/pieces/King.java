@@ -8,10 +8,6 @@ public class King extends AbstractPiece{
     @Override
     public boolean canMove(int[] from, int[] to) {
         if (super.isMovePossible(from, to)) return false;
-        if ((Math.abs(to[0]-from[0]) == 1 && Math.abs(to[1]-from[1]) == 0) || (Math.abs(to[0]-from[0]) == 0 && Math.abs(to[1]-from[1]) == 1)) {
-            return true;
-        } else {
-            return false;
-        }
+        return Math.abs(to[0]-from[0]) <= 1 && Math.abs(to[1]-from[1]) <= 1;
     }
 }

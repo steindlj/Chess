@@ -8,10 +8,6 @@ public class Bishop extends AbstractPiece{
     @Override
     public boolean canMove(int[] from, int[] to) {
         if (super.isMovePossible(from, to)) return false;
-        if (Math.abs(to[0]-from[0]) == Math.abs(to[1]-from[1])) {
-            return true;
-        } else {
-            return false;
-        }
+        return Math.abs(to[0]-from[0]) == Math.abs(to[1]-from[1]);
     }
 }

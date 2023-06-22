@@ -8,10 +8,6 @@ public class Rook extends AbstractPiece{
     @Override
     public boolean canMove(int[] from, int[] to) {
         if (super.isMovePossible(from, to)) return false;
-        if (from[0] == to[0] || from[1] == to[1]) {
-            return true;
-        } else {
-            return false;
-        }
+        return from[0] == to[0] || from[1] == to[1];
     }
 }

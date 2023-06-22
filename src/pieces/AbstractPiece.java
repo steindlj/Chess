@@ -2,55 +2,51 @@ package pieces;
 
 import game.Game;
 
-abstract public class AbstractPiece implements Piece{
-    String name;
-    public int[] spot = new int[2];
-    String symbol;
-    String color;
+abstract public class AbstractPiece{
+    private final String name;
+    private int[] pos = new int[2];
+    private final String symbol;
+    private final String color;
 
-    AbstractPiece(String name, int[] spot, String symbol, String color) {
+    AbstractPiece(String name, int[] pos, String symbol, String color) {
         this.name = name;
-        this.spot = spot;
+        this.pos = pos;
         this.symbol = symbol;
         this.color = color;
     }
 
-    @Override
     public String getName() {
         return this.name;
     }
 
-    @Override
-    public int[] getSpot() {
-        return this.spot;
+    public int[] getPos() {
+        return this.pos;
     }
 
-    @Override
     public String getSymbol() {
         return this.symbol;
     }
 
-    @Override
-    public String getAbbreviation() {
-        return String.valueOf(this.getName().charAt(0)) + String.valueOf(this.getColor().charAt(0));
-    }
-
-    @Override
-    public String getChessSpot() {
-        int row = 8-this.spot[0];
-        char column = (char) (this.spot[1]+97);
-        return String.valueOf(column) + String.valueOf(row);
-    }
-
-    @Override
-    abstract public boolean canMove(int[] from, int[] to);
-
-    @Override
     public String getColor() {
         return this.color;
     }
 
-    @Override
+    public void setPos(int[] pos) {
+        this.pos = pos;
+    }
+
+    public String getAbbreviation() {
+        return String.valueOf(this.getName().charAt(0)) + String.valueOf(this.getColor().charAt(0));
+    }
+
+    public String getChessSpot() {
+        int row = 8-this.pos[0];
+        char column = (char) (this.pos[1]+97);
+        return String.valueOf(column) + String.valueOf(row);
+    }
+
+    abstract public boolean canMove(int[] from, int[] to);
+
     public boolean willJump(int[] from, int[] to) {
         int distance;
         int y = 0;
@@ -139,7 +135,6 @@ abstract public class AbstractPiece implements Piece{
         return false;
     }
     
-    @Override
     public boolean isMovePossible(int[] from, int[] to) {
         return willJump(from, to) || (Game.btnsPiece[to[0]][to[1]].hasPiece() && getColor().equals(Game.btnsPiece[to[0]][to[1]].piece.getColor()));
     }

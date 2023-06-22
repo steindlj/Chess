@@ -7,34 +7,34 @@ import javax.swing.*;
 
 public class Button extends JButton implements ActionListener{
     public AbstractPiece piece = null;
-    int[] spot;
+    int[] pos;
     JLabel label;
     
-    Button(int[] spot, Color color) {
-        this.label = new JLabel("", JLabel.CENTER);
-        this.label.setFont(Game.BUTTON_FONT);
-        this.add(label);
-        this.spot = spot;
-        this.setPreferredSize(new Dimension(100, 100));
-        this.setBackground(color);
-        this.addActionListener(this);
+    Button(int[] pos, Color color) {
+        label = new JLabel("", JLabel.CENTER);
+        label.setFont(Game.BUTTON_FONT);
+        add(label);
+        this.pos = pos;
+        setPreferredSize(new Dimension(100, 100));
+        setBackground(color);
+        addActionListener(this);
     }
 
-    Button(AbstractPiece piece, int[] spot, Color color) {
-        this(spot, color);
-        this.label.setText(piece.getSymbol());
+    Button(AbstractPiece piece, int[] pos, Color color) {
+        this(pos, color);
+        label.setText(piece.getSymbol());
         this.piece = piece;
     }
 
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == this) {
             if (hasPiece() && Game.from == null && this.piece.getColor().equals(Game.Player)) {
-                showMoves(this.piece, this.spot);
-                Game.from = this.spot;
+                showMoves(this.piece, this.pos);
+                Game.from = this.pos;
                 Game.movingPiece = this.piece;
             } else if (Game.from != null) {
                 removeMoves();
-                Game.to = this.spot;
+                Game.to = this.pos;
                 if (Game.from[0] == Game.to[0] && Game.from[1] == Game.to[1]) {
                     Game.from = null;
                     Game.to = null;
@@ -89,7 +89,7 @@ public class Button extends JButton implements ActionListener{
     private void placePiece(AbstractPiece piece) {
         String logMove = "\n[" + piece.getAbbreviation() + "] " + piece.getChessSpot() + " to ";
         this.piece = piece;
-        this.piece.spot = this.spot;
+        this.piece.setPos(pos);
         logMove += this.piece.getChessSpot();
         Game.logText.setText(Game.logText.getText() + logMove);
         this.label.setText(piece.getSymbol());
@@ -98,7 +98,7 @@ public class Button extends JButton implements ActionListener{
     private void showMoves(AbstractPiece piece, int[] from) {
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
-                if (piece.canMove(from, Game.btnsPiece[i][j].spot)) {
+                if (piece.canMove(from, Game.btnsPiece[i][j].pos)) {
                     Game.btnsPiece[i][j].setBackground(Game.MOVE_COLOR);
                     Game.frame.validate();
                     Game.frame.repaint();
