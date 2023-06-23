@@ -1,13 +1,14 @@
-package pieces;
+package model.pieces;
+
+import model.Pos;
 
 public class King extends AbstractPiece{
-    public King(int[] spot, String symbol, String color) {
-        super("King", spot, symbol, color);
+    public King(Pos pos, String symbol, String color) {
+        super("King", pos, symbol, color);
     }
 
     @Override
     public boolean canMove(int[] from, int[] to) {
-        if (super.isMovePossible(from, to)) return false;
         return Math.abs(to[0]-from[0]) <= 1 && Math.abs(to[1]-from[1]) <= 1;
     }
 }
