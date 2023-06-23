@@ -1,10 +1,6 @@
 # Chess
-<<<<<<< HEAD
 Local chess game.
 Under Construction :)
-=======
-Local chess game. TODO: use MVC pattern
->>>>>>> dcae9689e3de54cab278e37b4be26e9a4aa6d5fd
 ## License
 Chess – Local chess game. <br />
 Copyright © 2022 steindlj
