@@ -2,14 +2,13 @@ package events;
 
 import java.util.EventObject;
 import model.*;
-import model.pieces.AbstractPiece;
 
 public class ChessEvent extends EventObject{
     private final Pos from;
     private final Pos to;
-    private final AbstractPiece piece;
+    private final Piece piece;
 
-    public ChessEvent(Game game, Pos from, Pos to, AbstractPiece piece) {
+    public ChessEvent(Game game, Pos from, Pos to, Piece piece) {
         super(game);
         this.from = from;
         this.to = to;
@@ -24,7 +23,7 @@ public class ChessEvent extends EventObject{
         return to;
     }
 
-    public AbstractPiece getPiece() {
+    public Piece getPiece() {
         return piece;
     }
 }

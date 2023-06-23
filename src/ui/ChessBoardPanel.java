@@ -12,7 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import model.*;
-import model.pieces.AbstractPiece;
 
 public class ChessBoardPanel extends JPanel {
     public static final Font BUTTON_FONT = new Font("Arial Unicode MS", Font.PLAIN, 65);
@@ -21,9 +20,10 @@ public class ChessBoardPanel extends JPanel {
     public static final Color MOVE_COLOR = new Color(173, 251, 133);
 
     private final Game game;
-    private final Map<Pos, JButton> map = new HashMap<>();
-    private State state = null;
-    private AbstractPiece move = null;
+    public static final Map<Pos, JButton> map = new HashMap<>();
+    private State state = State.NIL;
+    private Piece move = null;
+    private Pos from = null;
 
     public ChessBoardPanel(Game game) {
         this.game = game;
@@ -35,22 +35,21 @@ public class ChessBoardPanel extends JPanel {
         Color bg = LIGHT_COLOR;
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
-                Pos pos = Pos.get(col, row);
+                Pos pos = Pos.get(row, col);
                 JLabel label = new JLabel();
                 label.setFont(BUTTON_FONT);
-                if (game.getPiece(pos) != null) {
-                    label.setText(game.getPiece(pos).getSymbol());
-                }
+                setPiece(label, pos);
                 JButton btn = new JButton();
                 btn.add(label);
                 btn.setPreferredSize(new Dimension(100, 100));
                 btn.setBackground(bg);
                 btn.addActionListener(ae -> {
-                    if (game.hasPiece(pos) && game.isTurn(game.getPiece(pos).getColor()) && state == null) {
+                    if (game.hasPiece(pos) && game.isTurn(game.getPiece(pos).getColor()) && state == State.NIL) {
+                        from = pos;
                         showMoves(game.getPiece(pos));
-                    } else if (!game.hasPiece(pos) && state == State.SHOW_MOVES) {
+                    } else if (state == State.SHOW_MOVES) {
                         removeMoves();
-                        game.placePiece(move, pos);
+                        game.placePiece(move, from, pos);
                     } else {
                         removeMoves();
                     }
@@ -63,7 +62,7 @@ public class ChessBoardPanel extends JPanel {
         }
         game.addListener(evt -> {
             setPiece((JLabel) map.get(evt.getTo()).getComponent(0), evt.getTo());
-            setPiece((JLabel) map.get(evt.getTo()).getComponent(0), evt.getFrom());
+            setPiece((JLabel) map.get(evt.getFrom()).getComponent(0), evt.getFrom());
         });
     }
 
@@ -75,9 +74,9 @@ public class ChessBoardPanel extends JPanel {
         }
     }
 
-    private void showMoves(AbstractPiece piece) {
+    private void showMoves(Piece piece) {
         for (Pos pos : Pos.ALL) {
-            if (game.validateMove(piece, piece.getPos(), pos)) {
+            if (game.validateMove(piece, from, pos)) {
                     map.get(pos).setBackground(MOVE_COLOR);
                 }
         }
@@ -98,6 +97,6 @@ public class ChessBoardPanel extends JPanel {
                 }
             }
         }
-        state = null;
+        state = State.NIL;
     }
 }

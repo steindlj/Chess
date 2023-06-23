@@ -5,24 +5,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import model.pieces.AbstractPiece;
-import model.pieces.Bishop;
-import model.pieces.King;
-import model.pieces.Knight;
-import model.pieces.Pawn;
-import model.pieces.Queen;
-import model.pieces.Rook;
+import ui.ChessBoardPanel;
 import events.*;
 
 public class Game {
     private State state;
-    public static Map<Pos, AbstractPiece> board;
+    public static Map<Pos, Piece> board;
     private final List<ChessListener> listeners;
+    private String logText;
 
     public Game() {
         state = State.WHITE_NEXT;
         listeners = new ArrayList<>();
         board = new HashMap<>();
+        logText = "";
         initPieces();
     }
 
@@ -30,7 +26,11 @@ public class Game {
         return state;
     }
 
-    private void fireMovePiece(AbstractPiece piece, Pos from, Pos to) {
+    public String getLogText() {
+        return logText;
+    }
+
+    private void fireMovePiece(Piece piece, Pos from, Pos to) {
         for (ChessListener listener : listeners) {
             listener.pieceMoved(new ChessEvent(this, from, to, piece));
         }
@@ -48,7 +48,7 @@ public class Game {
         return board.containsKey(pos);
     }
 
-    public AbstractPiece getPiece(Pos pos) {
+    public Piece getPiece(Pos pos) {
         return board.getOrDefault(pos, null);
     }
 
@@ -56,7 +56,7 @@ public class Game {
         board.remove(pos);
     }
 
-    private void setPiece(Pos pos, AbstractPiece piece) {
+    private void setPiece(Pos pos, Piece piece) {
         board.put(pos, piece);
     }
 
@@ -65,37 +65,44 @@ public class Game {
     }
 
     private void initPieces() {
-        board.put(Pos.A_8, new Rook(Pos.A_8, "\u265C", "black"));
-        board.put(Pos.B_8, new Knight(Pos.B_8, "\u265E", "black"));
-        board.put(Pos.C_8, new Bishop(Pos.C_8, "\u265D", "black"));
-        board.put(Pos.D_8, new Queen(Pos.D_8, "\u265B", "black"));
-        board.put(Pos.E_8, new King(Pos.E_8, "\u265A", "black"));
-        board.put(Pos.F_8, new Bishop(Pos.F_8, "\u265D", "black"));
-        board.put(Pos.G_8, new Knight(Pos.G_8, "\u265E", "black"));
-        board.put(Pos.H_8, new Rook(Pos.H_8, "\u265C", "black"));
+        board.put(Pos.A_8, Piece.ROOK_BLACK);
+        board.put(Pos.B_8, Piece.KNIGHT_BLACK);
+        board.put(Pos.C_8, Piece.BISHOP_BLACK);
+        board.put(Pos.D_8, Piece.QUEEN_BLACK);
+        board.put(Pos.E_8, Piece.KING_BLACK);
+        board.put(Pos.F_8, Piece.BISHOP_BLACK);
+        board.put(Pos.G_8, Piece.KNIGHT_BLACK);
+        board.put(Pos.H_8, Piece.ROOK_BLACK);
         for (int i = 1; i <= 8; i++) {
-            board.put(Pos.get(i, 2), new Pawn(Pos.get(i, 2), "\u265F", "black"));
+            board.put(Pos.get(2, i), Piece.PAWN_BLACK);
         }
         for (int i = 1; i <= 8; i++) {
-            board.put(Pos.get(i, 7), new Pawn(Pos.get(i, 7), "\u2659", "white"));
+            board.put(Pos.get(7, i), Piece.PAWN_WHITE);
         }
-        board.put(Pos.A_1, new Rook(Pos.A_1, "\u2656", "white"));
-        board.put(Pos.B_1, new Knight(Pos.B_1, "\u2658", "white"));
-        board.put(Pos.C_1, new Bishop(Pos.C_1, "\u2657", "white"));
-        board.put(Pos.D_1, new Queen(Pos.D_1, "\u2655", "white"));
-        board.put(Pos.E_1, new King(Pos.E_1, "\u2654", "white"));
-        board.put(Pos.F_1, new Bishop(Pos.F_1, "\u2657", "white"));
-        board.put(Pos.G_1, new Knight(Pos.G_1, "\u2658", "white"));
-        board.put(Pos.H_1, new Rook(Pos.H_1, "\u2656", "white"));
+        board.put(Pos.A_1, Piece.ROOK_WHITE);
+        board.put(Pos.B_1, Piece.KNIGHT_WHITE);
+        board.put(Pos.C_1, Piece.BISHOP_WHITE);
+        board.put(Pos.D_1, Piece.QUEEN_WHITE);
+        board.put(Pos.E_1, Piece.KING_WHITE);
+        board.put(Pos.F_1, Piece.BISHOP_WHITE);
+        board.put(Pos.G_1, Piece.KNIGHT_WHITE);
+        board.put(Pos.H_1, Piece.ROOK_WHITE);
     }
 
-    public void placePiece(AbstractPiece piece, Pos pos) {
-        if (validateMove(piece, piece.getPos(), pos)) {
-            Pos from = piece.getPos();
-            removePiece(from);
-            piece.setPos(pos);
-            setPiece(pos, piece);
+    public void placePiece(Piece piece, Pos from, Pos pos) {
+        if (validateMove(piece, from, pos)) {
+            logText = "\n[" + piece.getAbbreviation() + "] " + from + " to " + pos;
             nextTurn();
+            if (hasPiece(pos)) {
+                logText += "\n" + getPiece(from).getAbbreviation() + " takes " + getPiece(pos).getAbbreviation() + "!"; 
+                if (getPiece(pos).getName().equals("King")) {
+                    state = piece.getColor() == "white" ? State.WHITE_WON : State.BLACK_WON;
+                    logText += "\n" + piece.getColor().toUpperCase() + " won!";
+                    ChessBoardPanel.map.forEach((a,b) -> b.setEnabled(false));
+                } 
+            }
+            removePiece(from);
+            setPiece(pos, piece);
             fireMovePiece(piece, from, pos);
         }
     }
@@ -106,83 +113,53 @@ public class Game {
 
     private boolean willJump(int[] from, int[] to) {
         int distance;
-        int y = 0;
-        int x = 0;
-        if (from[0] == to[0]) {
-            distance = to[1]-from[1];
-            if (Math.abs(distance) == 1) return false;
-            if (distance < 0) {
-                distance = Math.abs(distance)-1;
-                x = from[1]-1;
-                for (int i = 0; i < distance; i++) {
-                    if (hasPiece(Pos.get(from[0], x-i))) {
-                        return true;
-                    }
-                }
-            } else if (distance > 0) {
-                distance -= 1;
-                x = from[1]+1;
-                for (int i = 0; i < distance; i++) {
-                    if (hasPiece(Pos.get(from[0], x+i))) {
-                        return true;
-                    }
+        if (from[0] == to[0]) { // same row
+            distance = Math.abs(to[1]-from[1])-1;
+            if (Math.abs(distance) == 0) return false;
+            for (int i = 1; i <= distance; i++) {
+                int n = to[1]-from[1] < 0 ? i*-1 : i;
+                if (hasPiece(Pos.get(from[0]+1, from[1]+1+n))) {
+                    return true;
                 }
             }
-        } else if (from[1] == to[1]) {
-            distance =  to[0]-from[0];
-            if (Math.abs(distance) == 1) return false;
-            if (distance < 0) {
-                distance = Math.abs(distance)-1;
-                y = from[0]-1;
-                for (int i = 0; i < distance; i++) {
-                    if (hasPiece(Pos.get(y-i, from[1]))) {
-                        return true;
-                    } 
-                }
-            } else if (distance > 0) {
-                distance = Math.abs(distance)-1;
-                y = from[0]+1;
-                for (int i = 0; i < distance; i++) {
-                    if (hasPiece(Pos.get(y+i, from[1]))) {
-                        return true;
-                    } 
-                }
-            }
-        } else if (Math.abs(to[0]-from[0]) == Math.abs(to[1]-from[1])) {
+        } else if (from[1] == to[1]) { // same column
             distance = Math.abs(to[0]-from[0])-1;
-            if (Math.abs(to[0]-from[0]) == 1) return false;
-            y = to[0]-from[0];
-            x = to[1]-from[1];
-            if (y < 0) {
-                y = from[0]-1;
-                if (x < 0) {
-                    x = from[1]-1;
-                    for (int i = 0; i < distance; i++) {
-                        if (hasPiece(Pos.get(y-i, x-i))) {
+            if (Math.abs(distance) == 0) return false;
+            for (int i = 1; i <= distance; i++) {
+                int n = to[0]-from[0] < 0 ? i*-1 : i;
+                if (hasPiece(Pos.get(from[0]+1+n, from[1]+1))) {
+                    return true;
+                }
+            }
+        } else if (Math.abs(to[0]-from[0]) == Math.abs(to[1]-from[1])) { // same diagonal
+            distance = Math.abs(to[0]-from[0])-1;
+            if (Math.abs(to[0]-from[0]) == 0) return false;
+            int y = to[0]-from[0];
+            int x = to[1]-from[1];
+            if (y < 0) { // bottom -> top
+                if (x < 0) { // right -> left
+                    for (int i = 1; i <= distance; i++) {
+                        if (hasPiece(Pos.get(1+from[0]-i, 1+from[1]-i))) {
                             return true;
                         }
                     }
-                } else if (x > 0) {
-                    x = from[1]+1;
-                    for (int i = 0; i < distance; i++) {
-                        if (hasPiece(Pos.get(y-i, x+i))) {
+                } else if (x > 0) { // left -> right
+                    for (int i = 1; i <= distance; i++) {
+                        if (hasPiece(Pos.get(1+from[0]-i, 1+from[1]+i))) {
                             return true;
                         }
                     }
                 }
-            } else if (y > 0) {
-                y = from[0]+1;
-                if (x < 0) {
-                    x = from[1]-1;
-                    for (int i = 0; i < distance; i++) {
-                        if (hasPiece(Pos.get(y+i, x-i))) {
+            } else if (y > 0) { // top -> bottom
+                if (x < 0) { // right -> left
+                    for (int i = 1; i <= distance; i++) {
+                        if (hasPiece(Pos.get(1+from[0]+i, 1+from[1]-i))) {
                             return true;
                         }
                     }
-                } else if (x > 0) {
-                    x = from[1]+1;
-                    for (int i = 0; i < distance; i++) {
-                        if (hasPiece(Pos.get(y+i, x+i))) {
+                } else if (x > 0) { // left -> right
+                    for (int i = 1; i <= distance; i++) {
+                        if (hasPiece(Pos.get(1+from[0]+i, 1+from[1]+i))) {
                             return true;
                         }
                     }
@@ -192,11 +169,11 @@ public class Game {
         return false;
     }
 
-    public boolean validateMove(AbstractPiece piece, Pos from, Pos to) {
-        return isMovePossible(piece, from.toArray(), to.toArray()) && piece.canMove(from.toArray(), to.toArray());
+    public boolean validateMove(Piece piece, Pos from, Pos to) {
+        return isMovePossible(piece, from, to) && piece.canMove(from.toArray(), to.toArray());
     }
 
-    private boolean isMovePossible(AbstractPiece piece, int[] from, int[] to) {
-        return !willJump(from, to) || hasPiece(Pos.get(to[0], to[1])) && !piece.getColor().equals(getPiece(Pos.get(to[0], to[1])).getColor());
+    private boolean isMovePossible(Piece piece, Pos from, Pos to) {
+        return !willJump(from.toArray(), to.toArray()) && (!hasPiece(to) || !piece.getColor().equals(getPiece(to).getColor()));
     }
 }

@@ -8,11 +8,10 @@ import java.awt.*;
 public class ChessUI {
     private JFrame frame;
     private Game game;
-    public static final Font TEXT_FONT = new Font("Arial", Font.PLAIN, 18);
+    public static final Font TEXT_FONT = new Font("Arial", Font.PLAIN, 16);
 
     public ChessUI() {
         frame = new JFrame("Chess");
-        game = new Game();
         createGUI();
     }
 
@@ -21,6 +20,7 @@ public class ChessUI {
     }
 
     private void createGUI() {
+        game = new Game();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         setUpContent();
@@ -39,7 +39,7 @@ public class ChessUI {
         logText.setEditable(false);
         logText.setFont(TEXT_FONT);
         logText.setBackground(new Color(193, 193, 193));
-        game.addListener(evt -> logText.setText(logText.getText() + "\n[" + evt.getPiece().getAbbreviation() + "] " + evt.getFrom() + " to " + evt.getTo()));
+        game.addListener(evt -> logText.setText(logText.getText() + game.getLogText()));
         JScrollPane logScrollScreen = new JScrollPane(logText);
         logScrollScreen.setPreferredSize(new Dimension(160, 700));
         logScrollScreen.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
