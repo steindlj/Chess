@@ -1,5 +1,5 @@
 # Chess
-Local chess game.
+Simple chess game. Currently only playable locally.
 ## License
 Chess – Local chess game. <br />
 Copyright © 2022 steindlj
